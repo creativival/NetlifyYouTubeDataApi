@@ -2,9 +2,29 @@
 import fetch from "node-fetch";
 
 export async function handler(event) {
+  // OPTIONSリクエストに対するCORS対応
+  if (event.httpMethod === 'OPTIONS') {
+    return {
+      statusCode: 200,
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Content-Type',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS'
+      },
+      body: ''
+    };
+  }
+
   const videoId = event.queryStringParameters.videoId;
   if (!videoId) {
-    return { statusCode: 400, body: "Missing videoId" };
+    return { 
+      statusCode: 400, 
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ error: "Missing videoId" })
+    };
   }
 
   const API_KEY = process.env.YOUTUBE_API_KEY;
@@ -20,10 +40,20 @@ export async function handler(event) {
     const data = await res.json();
     return {
       statusCode: 200,
-      headers: { "Content-Type": "application/json" },
+      headers: { 
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json' 
+      },
       body: JSON.stringify(data),
     };
   } catch (err) {
-    return { statusCode: 500, body: err.toString() };
+    return { 
+      statusCode: 500, 
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ error: err.toString() })
+    };
   }
 }
