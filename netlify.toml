@@ -1,0 +1,4 @@
+# netlify.toml
+[build]
+  publish   = "public"        # ビルド出力 (静的ファイル) のディレクトリ
+  functions = "functions"   # Functions コードを置くディレクトリ
